@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 
 import Ticket from '../components/Ticket.vue'
 import movie from '../components/movie.vue'
+import VueTyperPlugin from 'vue-typer'
+
 
 import {BootstrapVue , IconsPlugin} from 'bootstrap-vue'
 import "bootstrap/dist/css/bootstrap.css"
@@ -15,6 +17,7 @@ import Vueaxios from 'vue-axios'
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueTyperPlugin)
 
 Vue.use(VueRouter)
 Vue.use(axios, Vueaxios)

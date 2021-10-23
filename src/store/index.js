@@ -1,27 +1,45 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
 
-Vue.use(Vuex)
-
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    movie : []
+    movie: [],
   },
   mutations: {
-    setMovie(state, payload){
-      state.movie.push(payload);
-    }
+    setMovie(state, payload) {
+      // console.log(payload)
+      state.movie = payload;
+    },
   },
   actions: {
-    setMovie(state, payload){
-      const data = payload
-      state.commit('setMovie', data)
-    }
+    fetchSetMovie(state) {
+      axios
+        .get(
+          "https://api.themoviedb.org/3/discover/movie",
+          { params: {
+            api_key: "46d234cc6703473b204fdcae0ed69364",
+            language: "en-US",
+            sort_by: "popularity.desc",
+            page: "1",
+            year: "2021",
+          } }
+        )
+        .then((res) => {
+          state.commit("setMovie", res.data.results);
+          console.log(res);
+        });
+      // const response = await fetch(url+payload, {Header});
+      // const data = await response.json();
+      // const res = data.results;
+      // state.commit('setMovie', res);
+      // console.log(res)
+    },
   },
-  modules: { 
-  },
+  modules: {},
   getters: {
-    getMovie : state => state.movie
-  }
-})
+    getMovie: (state) => state.movie,
+  },
+});
