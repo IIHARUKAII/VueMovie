@@ -18,10 +18,36 @@
   </div>
 </template>
 <script>
+// import { initializeApp } from "firebase/app";
+import firebase from 'firebase/compat/app';
+import 'firebase/auth';
+import 'firebase/firestore'
+import 'firebase/compat/database'
+// import _ from 'lodash'
+// import { pushToArray} from '../other/lib'
 import axios from "axios";
 // import Movie from '../components/round.vue'
 import movies from '../components/round.vue'
 import Seat from '../components/Seat.vue'
+
+const config = {
+   apiKey: "AIzaSyBqNUZMvod5nVFhpdgp-vucDmMWHFhz-uM",
+  authDomain: "vuetest-edc92.firebaseapp.com",
+  databaseURL: "https://vuetest-edc92-default-rtdb.firebaseio.com",
+  projectId: "vuetest-edc92",
+  storageBucket: "vuetest-edc92.appspot.com",
+  messagingSenderId: "298256454479",
+  appId: "1:298256454479:web:b58554edfa7b3b3c10ab3a"
+};
+
+firebase.initializeApp(config);
+// const app = initializeApp(config);
+
+const db = firebase.database()
+const dbRef = db.ref('/')
+dbRef.set('yyy')
+
+
 
 export default {
   name: "Ticket",
@@ -47,6 +73,19 @@ export default {
                }
            }
            this.movieId = movieId
+
+          //  const movieRef = db.ref('/').child(this.movieId)
+          //  movieRef.on('value', snapshot => {
+          //      console.log(snapshot.val())
+          //      const seats = snapshot.val()
+          //      this.firebaseSeats = []
+
+          //      _.forOwn(seats, s => {
+          //          pushToArray(s, this.firebaseSeats)
+          //      })
+          //      console.log(this.firebaseSeats.length)
+          //  })
+           
        },
        handleChooseSeat(seat){
            const ids = this.selectSeats.map(s => s.id )
@@ -56,6 +95,12 @@ export default {
            }else{
                this.selectSeats.splice(idx, 1)
            }
+
+          //  pushToArray( seat, this.selectSeats)
+
+          //  const movieRef = db.ref().child(this.movieId)
+          //  movieRef.push(seat)
+
            this.status = this.selectSeats.reduce((summary, s) => {
                summary.count ++
                summary.price += s.price
