@@ -11,6 +11,7 @@
         :movieId="movieId" 
         @chooseSeat="handleChooseSeat"
         :selectSeats="selectSeats"
+        :firebaseSeats="firebaseSeats"
         />
         <button class="buy" type="button" @click="alert">Buy Ticket</button>
         <!-- <button class="buy">Buy Ticket</button> -->
@@ -23,8 +24,8 @@ import firebase from 'firebase/compat/app';
 import 'firebase/auth';
 import 'firebase/firestore'
 import 'firebase/compat/database'
-// import _ from 'lodash'
-// import { pushToArray} from '../other/lib'
+import _ from 'lodash'
+import { pushToArray} from '../other/lib'
 import axios from "axios";
 // import Movie from '../components/round.vue'
 import movies from '../components/round.vue'
@@ -44,8 +45,8 @@ firebase.initializeApp(config);
 // const app = initializeApp(config);
 
 const db = firebase.database()
-const dbRef = db.ref('/')
-dbRef.set('yyy')
+// const dbRef = db.ref('/')
+// dbRef.push('yyy')
 
 
 
@@ -58,6 +59,7 @@ export default {
       movieTH: null,
       movieId: '',
       selectSeats: [],
+      firebaseSeats: [],
       status: {count:0, price: 0}
     };
   },
@@ -74,9 +76,25 @@ export default {
            }
            this.movieId = movieId
 
+           const movieRef = db.ref('/').child(this.movieId)
+           movieRef.on('value', snapshot => {
+             console.log(snapshot.val())
+             const seats = snapshot.val()
+             this.firebaseSeats = []
+
+
+
+             _.forOwn(seats, s=> {
+              //  console.log(s)
+              pushToArray(s, this.firebaseSeats)
+             })
+
+            //  console.log(this.firebaseSeats.length)
+           })
+
           //  const movieRef = db.ref('/').child(this.movieId)
           //  movieRef.on('value', snapshot => {
-          //      console.log(snapshot.val())
+          //     //  console.log(snapshot.val())
           //      const seats = snapshot.val()
           //      this.firebaseSeats = []
 
@@ -88,18 +106,24 @@ export default {
            
        },
        handleChooseSeat(seat){
-           const ids = this.selectSeats.map(s => s.id )
-           const idx = ids.indexOf(seat.id)
-           if(idx === -1 ){
-                this.selectSeats.push(seat)
-           }else{
-               this.selectSeats.splice(idx, 1)
-           }
+          //  const ids = this.selectSeats.map(s => s.id )
+          //  const idx = ids.indexOf(seat.id)
+          //  if(idx === -1 ){
+          //       this.selectSeats.push(seat)
+          //  }else{
+          //      this.selectSeats.splice(idx, 1)
+          //  }
 
           //  pushToArray( seat, this.selectSeats)
 
           //  const movieRef = db.ref().child(this.movieId)
           //  movieRef.push(seat)
+          pushToArray(seat, this.selectSeats)
+
+          const movieRef = db.ref().child(this.movieId)
+          movieRef.push(seat)
+
+         
 
            this.status = this.selectSeats.reduce((summary, s) => {
                summary.count ++
