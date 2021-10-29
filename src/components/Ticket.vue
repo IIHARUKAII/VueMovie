@@ -2,7 +2,7 @@
   <div class="title2">
     <div class="box">
       <br><br><br><br><br><br><br><br><br><br>
-       <h1 class="title3">{{ movie.title }} </h1>
+       <h1 class="title3">{{ movie.id }} </h1>
       <img v-bind:src="'https://image.tmdb.org/t/p/w500/' + movie.backdrop_path">
         <h3 class="title"> {{ movieId }} </h3>
         <h1 id="price">Count:{{status.count}}, Price:{{status.price}} </h1>
@@ -32,13 +32,13 @@ import movies from '../components/round.vue'
 import Seat from '../components/Seat.vue'
 
 const config = {
-   apiKey: "AIzaSyBqNUZMvod5nVFhpdgp-vucDmMWHFhz-uM",
-  authDomain: "vuetest-edc92.firebaseapp.com",
-  databaseURL: "https://vuetest-edc92-default-rtdb.firebaseio.com",
-  projectId: "vuetest-edc92",
-  storageBucket: "vuetest-edc92.appspot.com",
-  messagingSenderId: "298256454479",
-  appId: "1:298256454479:web:b58554edfa7b3b3c10ab3a"
+    apiKey: "AIzaSyBqNUZMvod5nVFhpdgp-vucDmMWHFhz-uM",
+    authDomain: "vuetest-edc92.firebaseapp.com",
+    databaseURL: "https://vuetest-edc92-default-rtdb.firebaseio.com",
+    projectId: "vuetest-edc92",
+    storageBucket: "vuetest-edc92.appspot.com",
+    messagingSenderId: "298256454479",
+    appId: "1:298256454479:web:b58554edfa7b3b3c10ab3a"
 };
 
 firebase.initializeApp(config);
@@ -50,6 +50,8 @@ const db = firebase.database()
 
 
 
+
+
 export default {
   name: "Ticket",
   components:{ movies, Seat },
@@ -58,6 +60,7 @@ export default {
       movie: null,
       movieTH: null,
       movieId: '',
+      movieTitle : null,
       selectSeats: [],
       firebaseSeats: [],
       status: {count:0, price: 0}
@@ -65,7 +68,17 @@ export default {
   },
   computed: {},
   methods:{
-    handleChooseMovie(movieId){
+    // handleChooseTitle(movie){
+    //   this.movie = movie.id
+    //   const movieRef = db.ref().child(this.movie)
+    // //   movieRef.on('value', snapshot => {
+    // //          console.log(snapshot.val())
+    // //         //  const seats = snapshot.val()
+    // //         //  this.firebaseSeats = []
+    // },
+
+
+    handleChooseMovie(movieId ){
            if(this.status.count){
                if(confirm('Data will be lost???')){
                    this.status = { count:0, price :0}
@@ -76,7 +89,8 @@ export default {
            }
            this.movieId = movieId
 
-           const movieRef = db.ref('/').child(this.movieId)
+           const movieRef = db.ref(`${this.movie.id}`).child(this.movieId)
+          //  movieRef.push(movieId)
            movieRef.on('value', snapshot => {
              console.log(snapshot.val())
              const seats = snapshot.val()
@@ -92,35 +106,11 @@ export default {
             //  console.log(this.firebaseSeats.length)
            })
 
-          //  const movieRef = db.ref('/').child(this.movieId)
-          //  movieRef.on('value', snapshot => {
-          //     //  console.log(snapshot.val())
-          //      const seats = snapshot.val()
-          //      this.firebaseSeats = []
-
-          //      _.forOwn(seats, s => {
-          //          pushToArray(s, this.firebaseSeats)
-          //      })
-          //      console.log(this.firebaseSeats.length)
-          //  })
-           
        },
        handleChooseSeat(seat){
-          //  const ids = this.selectSeats.map(s => s.id )
-          //  const idx = ids.indexOf(seat.id)
-          //  if(idx === -1 ){
-          //       this.selectSeats.push(seat)
-          //  }else{
-          //      this.selectSeats.splice(idx, 1)
-          //  }
-
-          //  pushToArray( seat, this.selectSeats)
-
-          //  const movieRef = db.ref().child(this.movieId)
-          //  movieRef.push(seat)
           pushToArray(seat, this.selectSeats)
 
-          const movieRef = db.ref().child(this.movieId)
+          const movieRef = db.ref(`${this.movie.id}`).child(this.movieId)
           movieRef.push(seat)
 
          
